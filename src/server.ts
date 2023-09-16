@@ -1,10 +1,12 @@
+// DEPENDENCY
 import { fastify } from 'fastify'
+
+// ROUTE
+import { getAllPromptsRoute } from './routes/get-all-prompts'
 
 const app = fastify()
 
-app.get('/', () => ({
-  hello: 'world',
-}))
+app.register(getAllPromptsRoute)
 
 app
   .listen({ port: 3333 })
