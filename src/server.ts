@@ -1,6 +1,7 @@
 // DEPENDENCY
 import 'dotenv/config'
 import { fastify } from 'fastify'
+import { fastifyCors } from '@fastify/cors'
 
 // ROUTE
 import { getAllPromptsRoute } from './routes/get-all-prompts'
@@ -9,6 +10,10 @@ import { createTranscriptionRoute } from './routes/create-transcrition'
 import { generateAiResponseRoute } from './routes/generate-ai-response'
 
 const app = fastify()
+
+app.register(fastifyCors, {
+  origin: '*',
+})
 
 app.register(getAllPromptsRoute)
 app.register(uploadVideoRoute)
