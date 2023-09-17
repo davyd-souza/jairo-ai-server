@@ -8,18 +8,30 @@ POST http://localhost:3333/videos
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4WxkTrZu0gW
 
 ------WebKitFormBoundary7MA4WxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="como-deixar-seu-codigo-igual-ao-meu.mp3"
+Content-Disposition: form-data; name="file"; filename="comecar-pelo-typescript-ou-javascript-python-deno-react-native-ou-flutter.mp3"
 Content-Type: audio/mpeg
 
-< ./como-deixar-seu-codigo-igual-ao-meu.mp3
+< ./comecar-pelo-typescript-ou-javascript-python-deno-react-native-ou-flutter.mp3
 ------WebKitFormBoundary7MA4WxkTrZu0gW--
 
 ###
 
 # @name create-transcription
-POST http://localhost:3333/videos/dc31d1f3-5d74-4b18-b301-f9fc0796ab1b/transcription
+POST http://localhost:3333/videos/b4859470-5346-4222-8ff5-0a7bd2f688ff/transcription
 Content-Type: application/json
 
 {
-  "prompt": "ESLint, Prettier, Tailwind"
+  "prompt": "Kivy, Python, TypeScript, JavaScript, Deno, React Native, Flutter"
+}
+
+###
+
+# @name generate-ai-response
+POST http://localhost:3333/ai/response
+Content-Type: application/json
+
+{
+  "videoId": "b4859470-5346-4222-8ff5-0a7bd2f688ff",
+  "temperature": 0.1,
+  "template": "Gere um resumo sucinto da transcrição do vídeo informado a seguir: '''{transcription}'''"
 }
