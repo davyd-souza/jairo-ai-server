@@ -8,8 +8,18 @@ POST http://localhost:3333/videos
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4WxkTrZu0gW
 
 ------WebKitFormBoundary7MA4WxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="forest-stream.mp3"
+Content-Disposition: form-data; name="file"; filename="como-deixar-seu-codigo-igual-ao-meu.mp3"
 Content-Type: audio/mpeg
 
-< ./forest-stream.mp3
+< ./como-deixar-seu-codigo-igual-ao-meu.mp3
 ------WebKitFormBoundary7MA4WxkTrZu0gW--
+
+###
+
+# @name create-transcription
+POST http://localhost:3333/videos/dc31d1f3-5d74-4b18-b301-f9fc0796ab1b/transcription
+Content-Type: application/json
+
+{
+  "prompt": "ESLint, Prettier, Tailwind"
+}
