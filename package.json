@@ -4,6 +4,10 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+  "engines": {
+    "node": "18.16.0",
+    "npm": "9.6.7"
+  },
   "scripts": {
     "start": "node dist/server.cjs",
     "dev": "tsx watch src/server.ts",
