@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "tsx watch src/server.ts"
+    "start": "node dist/server.cjs",
+    "dev": "tsx watch src/server.ts",
+    "build": "tsup src"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +19,7 @@
     "@rocketseat/eslint-config": "^2.1.0",
     "@types/node": "^20.6.2",
     "prisma": "^5.3.1",
+    "tsup": "^7.2.0",
     "tsx": "^3.12.10",
     "typescript": "^5.2.2"
   },
