@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node dist/server.cjs",
     "dev": "tsx watch src/server.ts",
-    "build": "tsup src"
+    "build": "prisma generate && prisma migrate deploy && prisma db seed && tsup src"
   },
   "keywords": [],
   "author": "",
