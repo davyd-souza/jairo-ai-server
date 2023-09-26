@@ -1,77 +1,68 @@
 // DEPENDENCY
 import path from 'node:path'
 import { randomUUID } from 'node:crypto'
-import { pipeline } from 'node:stream'
-import { promisify } from 'node:util'
-import { fastifyMultipart } from '@fastify/multipart'
-import admin from 'firebase-admin'
-import type { FastifyInstance } from 'fastify'
+import { PutObjectCommand } from '@aws-sdk/client-s3'
+
+// LIB
+import { prisma } from '../lib/prisma'
+import { s3 } from '../lib/s3'
+import { upload } from '../lib/multer'
 
 // TYPE
-import { prisma } from '../lib/prisma'
+import type { FastifyInstance, FastifyRequest } from 'fastify'
 
-const pump = promisify(pipeline)
-
-admin.initializeApp({
-  credential: admin.credential.cert({
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    projectId: process.env.FIREBASE_APP_ID,
-    clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  }),
-  storageBucket: 'gs://jairo-ai.appspot.com/',
-})
+type FileFastifyRequest = FastifyRequest & {
+  file?: {
+    buffer: Buffer
+    encoding: string
+    fieldname: string
+    mimetype: string
+    originalname: string
+    size: number
+  }
+}
 
 export async function uploadVideoRoute(app: FastifyInstance) {
-  app.register(fastifyMultipart, {
-    limits: {
-      fieldSize: 1_048_576 * 10, // 10mb
+  app.post(
+    '/videos',
+    { preHandler: upload.single('file') },
+    async (req: FileFastifyRequest, reply) => {
+      const file = req.file
+
+      if (!file) {
+        return reply.status(400).send({ error: 'Missing file input' })
+      }
+
+      const extension = path.extname(file.originalname)
+
+      if (extension !== '.mp3') {
+        return reply
+          .status(400)
+          .send({ error: 'Invalid file type, please upload a MP3.' })
+      }
+
+      const fileBasename = path.basename(file.originalname, extension)
+      const fileUploadName = `${randomUUID()}-${fileBasename}${extension}`
+
+      const command = new PutObjectCommand({
+        Bucket: process.env.AWS_BUCKET_NAME,
+        Key: fileUploadName,
+        ContentType: file.mimetype,
+        Body: file.buffer,
+      })
+
+      await s3.send(command)
+
+      const video = await prisma.video.create({
+        data: {
+          name: file.originalname,
+          path: fileUploadName,
+        },
+      })
+
+      return {
+        video,
+      }
     },
-  })
-
-  app.post('/videos', async (req, reply) => {
-    const data = await req.file()
-
-    if (!data) {
-      return reply.status(400).send({ error: 'Missing file input' })
-    }
-
-    const extension = path.extname(data.filename)
-
-    if (extension !== '.mp3') {
-      return reply
-        .status(400)
-        .send({ error: 'Invalid file type, please upload a MP3.' })
-    }
-
-    const fileBasename = path.basename(data.filename, extension)
-    const fileUploadName = `${fileBasename}-${randomUUID()}-${extension}`
-
-    const bucket = admin.storage().bucket()
-    const file = bucket.file(fileUploadName)
-
-    const writeStream = file.createWriteStream({
-      metadata: {
-        contentType: data.mimetype,
-      },
-      resumable: false,
-    })
-
-    await pump(data.file, writeStream)
-
-    const fileUrl = await file.getSignedUrl({
-      action: 'read',
-      expires: Date.now() + 300 * 24 * 60 * 60 * 1000, // 300 days
-    })
-
-    const video = await prisma.video.create({
-      data: {
-        name: data.filename,
-        path: fileUrl[0],
-      },
-    })
-
-    return {
-      video,
-    }
-  })
+  )
 }

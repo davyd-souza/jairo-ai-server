@@ -2,6 +2,7 @@
 import 'dotenv/config'
 import { fastify } from 'fastify'
 import { fastifyCors } from '@fastify/cors'
+import multer from 'fastify-multer'
 
 // ROUTE
 import { getAllPromptsRoute } from './routes/get-all-prompts'
@@ -10,6 +11,8 @@ import { createTranscriptionRoute } from './routes/create-transcrition'
 import { generateAiResponseRoute } from './routes/generate-ai-response'
 
 const app = fastify()
+
+app.register(multer.contentParser)
 
 app.register(fastifyCors, {
   origin: '*',
