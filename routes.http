@@ -2,6 +2,10 @@
 GET http://localhost:3333/prompts
 
 ###
+# @name get-videos
+GET http://localhost:3333/videos
+
+###
 
 # @name upload
 POST http://localhost:3333/videos
