@@ -16,7 +16,7 @@ const app = fastify()
 app.register(multer.contentParser)
 
 app.register(fastifyCors, {
-  origin: '*',
+  origin: 'https://jairo-ai.vercel.app',
   // origin: 'https://jairo-ai.vercel.app',
   credentials: true,
   allowedHeaders: '*',
