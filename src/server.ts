@@ -16,19 +16,10 @@ const app = fastify()
 app.register(multer.contentParser)
 
 app.register(fastifyCors, {
-  origin: ['https://jairo-ai.vercel.app'],
+  origin: '*',
+  // origin: 'https://jairo-ai.vercel.app',
   credentials: true,
-  allowedHeaders: [
-    'X-CSRF-Token',
-    'X-Requested-With',
-    'Accept',
-    'Accept-Version',
-    'Content-Length',
-    'Content-MD5',
-    'Content-Type',
-    'Date',
-    'X-Api-Version',
-  ],
+  allowedHeaders: '*',
   methods: ['GET', 'OPTIONS', 'PATCH', 'DELETE', 'POST', 'PUT'],
 })
 
