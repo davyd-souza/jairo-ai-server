@@ -23,8 +23,9 @@ app.register(fastifyCors, {
     'Accept',
     'Content-Type',
     'Authorization',
+    'Access-Control-Allow-Origin',
   ],
-  methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
 })
 
 app.register(getAllPromptsRoute)
