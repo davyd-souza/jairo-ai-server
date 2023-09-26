@@ -16,7 +16,15 @@ const app = fastify()
 app.register(multer.contentParser)
 
 app.register(fastifyCors, {
-  origin: '*',
+  origin: ['https://jairo-ai.vercel.app'],
+  allowedHeaders: [
+    'Origin',
+    'X-Requested-With',
+    'Accept',
+    'Content-Type',
+    'Authorization',
+  ],
+  methods: ['GET', 'PUT', 'PATCH', 'POST', 'DELETE'],
 })
 
 app.register(getAllPromptsRoute)
